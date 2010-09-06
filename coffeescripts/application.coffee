@@ -62,7 +62,7 @@ initialize = ->
     rotateX-=0.5
     rotateY-=1
     rotateZ-=0.5
-    scale = Math.abs(Math.sin(rotateZ * deg2rad) * 0.5)
+    scale = Math.abs(Math.sin(rotateZ * deg2rad) * 0.9)
   , 1000 / 50)
   return
 

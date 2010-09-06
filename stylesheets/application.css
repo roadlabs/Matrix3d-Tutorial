@@ -24,10 +24,11 @@ a {
   color: red; }
 
 span.red {
-  background: #7777ff; }
+  background: red; }
 
 span.yellow {
-  background: #aaaaff; }
+  background: yellow;
+  color: black; }
 
 section.content {
   position: absolute;
