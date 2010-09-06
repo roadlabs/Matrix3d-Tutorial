@@ -42,7 +42,8 @@ matrix3d(m00, m01, m02, m03,
 </pre>
     <p>
       Unless you're a math god you probably think to yourself: "I find the lack of documentation quit disturbing" followed
-      by the question on how to build the really hot Darth Vader stuff on left.
+      by the question on how to build the really hot Darth Vader stuff on left. The described approach is not meant to be mathematical
+      or complete - I just want to fill a little documentation gap.
     </p>
     <h2>Some Linear Algebra</h2>
     <p>
@@ -56,7 +57,7 @@ matrix3d(m00, m01, m02, m03,
     <p>
       Since this works vice versa these three basic steps could be composed into a giant omnipotent transformation matrix. So far
       so good, but how do I get from my basic steps to that wild parameter list that matrix3d needs? Let's start with the most simple
-      matrix we have in mathmatic (for making my life easier I'm using <a href="http://sylvester.jcoglan.com/">Sylvester</a> for matrix math calculations).
+      matrix we have in mathmatics (for making my life easier I'm using <a href="http://sylvester.jcoglan.com/">Sylvester</a> for matrix math calculations).
     </p>
     <h2>The Identity Matrix</h2>
 <pre>
@@ -96,7 +97,7 @@ scaleMatrix = $M([
 </pre>
     <h2>The Rotation Matrixes</h2>
     <p>
-      Rotatation can happen around three Axis X,Y,Z let's say be the degree values a,b,c. The corresponding matrixes to describe
+      Rotation can happen around three Axis X,Y,Z let's say around the degree values a,b,c. The corresponding matrixes to describe
       this transformation are:
     </p>
 <pre>
@@ -137,7 +138,7 @@ translationMatrix = $M([
       The translation matrix leaves the most pixels but add the values tx, ty and tz to the final vector result.
     </p>
     <h2>The fun part</h2>
-    <p>Yes math can be funny. Each of this matrix can be used in a composition. So if I want to rotate somehting around all axis
+    <p>Yes math can be funny. Each of this matrix can be used in a composition. So if I want to rotate something around all axis
       and then translate it some pixels then you just multiply the matrixes and that's it:</p>
 <pre>
 tM = rotationXMatrix
