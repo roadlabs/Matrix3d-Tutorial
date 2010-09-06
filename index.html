@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Pragmatic CSS3 -webit-transform matrix3d Tutorial</title>
+
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+<link rel="stylesheet" type="text/css" href="stylesheets/reset.css" />
+<link rel="stylesheet" type="text/css" href="stylesheets/application.css" />
+
+<link href='http://fonts.googleapis.com/css?family=Tangerine:regular,bold' rel='stylesheet' type='text/css'>
+
+<script type="text/javascript" src="javascripts/sylvester.js"></script>
+<script type="text/javascript" src="javascripts/application.js"></script>
+
+<link rel="shortcut icon" type="image/png" href="favicon.png" />
+</head>
+<body>
+  <h1>
+    Pragmatic CSS3 <br />
+    -webit-transform matrix3d <br />
+    Tutorial
+  </h1>
+  <img id="darth-vader" src="images/darth-vader.jpg" />
+  <section class="content">
+    <h2>Matrix3d</h2>
+    <p>
+      When you dive into apples documentation of <a href="http://developer.apple.com/safari/library/documentation/appleapplications/reference/SafariCSSRef/Articles/Functions.html">matrix3d</a> you will find
+      a short definition "Specifies a 3D transformation as a 4 x 4 matrix." following by the function definition in code:
+    </p>
+    <pre>
+matrix3d(m00, m01, m02, m03,
+         m10, m11, m12, m13,
+         m20, m21, m22, m23,
+         m30, m31, m31, m33)
+</pre>
+    <p>
+      Unless you're a math god you probably think to yourself: "I find the lack of documentation quit disturbing" followed
+      by the question on how to build the really hot Darth Vader stuff on left.
+    </p>
+    <h2>Some Linear Algebra</h2>
+    <p>
+      Every complex transformation could be seperated into three basic transformations:
+    </p>
+    <ul>
+      <li>Rotation</li>
+      <li>Scale</li>
+      <li>Translation</li>
+    </ul>
+    <p>
+      Since this works vice versa these three basic steps could be composed into a giant omnipotent transformation matrix. So far
+      so good, but how do I get from my basic steps to that wild parameter list that matrix3d needs? Let's start with the most simple
+      matrix we have in mathmatic (for making my life easier I'm using <a href="http://sylvester.jcoglan.com/">Sylvester</a> for matrix math calculations).
+    </p>
+    <h2>The Identity Matrix</h2>
+<pre>
+identityMatrix = $M([
+  <span class="red">[1,0,0,</span>0],
+  <span class="red">[0,1,0,</span>0],
+  <span class="red">[0,0,1,</span>0],
+  <span class="yellow">[0,0,0,</span>1]
+])
+</pre>
+    <p>
+      This matrix actually does nothing! Nil! Null! Nada! No pixels get harmed!
+      I divided this matrix in two sections. The red section is the area were you will describe the Rotation and Scale. The yellow
+      area is were you describe the Translation. The other parameters are rarely used in real life except for really weird LSD style FX demos.
+    </p>
+    <p>
+      We start with creating a scale matrix by multiplying the identity matrix with a scaler (a number).
+      <code>scaleMatrix = indentityMatrix.multiply(s)</code>
+    </p>
+    <h2>The Scale Matrix</h2>
+<pre>
+scaleMatrix = $M([
+  [s,0,0,0],
+  [0,s,0,0],
+  [0,0,s,0],
+  [0,0,0,s]
+])
+</pre>
+<p>Since we don't want to transform the translation coordinates we rip off the last scale and replace it with 1:</p>
+<pre>
+scaleMatrix = $M([
+  [s,0,0,0],
+  [0,s,0,0],
+  [0,0,s,0],
+  [0,0,0,1]
+])
+</pre>
+    <h2>The Rotation Matrixes</h2>
+    <p>
+      Rotatation can happen around three Axis X,Y,Z let's say be the degree values a,b,c. The corresponding matrixes to describe
+      this transformation are:
+    </p>
+<pre>
+rotationXMatrix = $M([
+  [1,0,0,0],
+  [0,Math.cos(a), Math.sin(-a), 0],
+  [0,Math.sin(a), Math.cos( a), 0],
+  [0,0,0,1]
+])
+
+rotationYMatrix = $M([
+  [Math.cos( b), 0, Math.sin(b),0],
+  [0,1,0,0],
+  [Math.sin(-b), 0, Math.cos(b), 0],
+  [0,0,0,1]
+])
+
+rotationZMatrix = $M([
+  [Math.cos(c), Math.sin(-c), 0, 0],
+  [Math.sin(c), Math.cos( c), 0, 0],
+  [0,0,1,0],
+  [0,0,0,1]
+])
+</pre>
+    <p>
+      Each matrix describes a rotation around one axis.
+    </p>
+    <h2>The Translation Matrix</h2>
+<pre>
+translationMatrix = $M([
+  [1,0,0,0],
+  [0,1,0,0],
+  [0,0,1,0],
+  [tx,ty,tz,1]
+])
+</pre>
+    <p>
+      The translation matrix leaves the most pixels but add the values tx, ty and tz to the final vector result.
+    </p>
+    <h2>The fun part</h2>
+    <p>Yes math can be funny. Each of this matrix can be used in a composition. So if I want to rotate somehting around all axis
+      and then translate it some pixels then you just multiply the matrixes and that's it:</p>
+<pre>
+tM = rotationXMatrix
+      .x(rotationYMatrix)
+      .x(rotationZMatrix)
+      .x(scaleMatrix)
+      .x(translationMatrix)
+</pre>
+    <p>
+      Finally you apply it to the image:
+    </p>
+<pre>
+s  = "matrix3d("
+s += tM.e(1,1) + "," + tM.e(1,2) + "," + tM.e(1,3) + "," + tM.e(1,4) + ","
+s += tM.e(2,1) + "," + tM.e(2,2) + "," + tM.e(2,3) + "," + tM.e(2,4) + ","
+s += tM.e(3,1) + "," + tM.e(3,2) + "," + tM.e(3,3) + "," + tM.e(3,4) + ","
+s += tM.e(4,1) + "," + tM.e(4,2) + "," + tM.e(4,3) + "," + tM.e(4,4)
+s += ")"
+
+document.getElementById('darth-vader').style['-webkit-transform'] = s
+</pre>
+    <h2>Env</h2>
+    <p>
+      The demo just runs on webkit browsers like chrome or safari. The sourcecode is written in <a href="http://jashkenas.github.com/coffee-script/">coffeescript</a> which
+      is way cooler than javascript - but the compiled javascript should be readable aswell.
+      You can grab the full tutorial + source on github. If you're interested in cutting webdevelopment you might
+      follow <a href="http://twitter.com/9elements">@9elements</a> or become a <a href="http://www.facebook.com/9elements">facebook fan</a>. If you have further questions drop me a line on twitter <a href="http://twitter.com/sippndipp">@sippndipp</a> (you may follow me aswell.)
+    </p>
+    <h2>Credits</h2>
+    <ul>
+      <li>James Coglans awesome Matrix Javascript Library <a href="http://sylvester.jcoglan.com/">Sylvester</a></li>
+      <li>The very nice Wikipedia Article about <a href="http://en.wikipedia.org/wiki/Linear_transformation#Examples_of_linear_transformation_matrices">linear transformations</a></li>
+    </ul>
+  </section>
+</body>
+</html>
