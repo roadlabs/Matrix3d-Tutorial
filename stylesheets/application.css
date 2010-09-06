@@ -1,13 +1,19 @@
+html {
+  height: 100%;
+  width: 100%; }
+
 body {
-  background: -webkit-gradient(linear, left top, left bottom, from(#fbf9f7), to(white));
-  color: black;
-  padding: 25px; }
+  background: url(../images/earth.jpg) no-repeat black;
+  color: #eaeaea;
+  padding: 25px;
+  height: 3000px; }
 
 h1 {
   font-family: "Tangerine", arial, serif;
   font-size: 64px;
   font-weight: bold;
-  line-height: 1.2; }
+  line-height: 1.2;
+  color: white; }
 
 img {
   position: absolute;
@@ -18,10 +24,10 @@ a {
   color: red; }
 
 span.red {
-  background: #ffaaaa; }
+  background: #7777ff; }
 
 span.yellow {
-  background: #ffffaa; }
+  background: #aaaaff; }
 
 section.content {
   position: absolute;
@@ -29,7 +35,7 @@ section.content {
   right: 10px;
   width: 50%;
   padding: 10px;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(0, 0, 0, 0.75);
   line-height: 1.5; }
   section.content h2, section.content p, section.content ul, section.content pre {
     margin-bottom: 10px; }
@@ -41,4 +47,5 @@ section.content {
       list-style-type: square; }
   section.content h2 {
     font-family: "Tangerine", arial, serif;
-    font-size: 44px; }
+    font-size: 44px;
+    color: white; }

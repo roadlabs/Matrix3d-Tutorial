@@ -59,9 +59,9 @@ initialize = ->
     document.getElementById('darth-vader').style['-webkit-transform'] = s
 
     # do some animation
-    rotateX++
-    rotateY+=2
-    rotateZ++
+    rotateX-=0.5
+    rotateY-=1
+    rotateZ-=0.5
     scale = Math.abs(Math.sin(rotateZ * deg2rad) * 0.5)
   , 1000 / 50)
   return

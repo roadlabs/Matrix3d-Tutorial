@@ -23,9 +23,9 @@
       s += transformationMatrix.e(4, 1) + "," + transformationMatrix.e(4, 2) + "," + transformationMatrix.e(4, 3) + "," + transformationMatrix.e(4, 4);
       s += ")";
       document.getElementById('darth-vader').style['-webkit-transform'] = s;
-      rotateX++;
-      rotateY += 2;
-      rotateZ++;
+      rotateX -= 0.5;
+      rotateY -= 1;
+      rotateZ -= 0.5;
       return (scale = Math.abs(Math.sin(rotateZ * deg2rad) * 0.5));
     }, 1000 / 50);
     return null;
